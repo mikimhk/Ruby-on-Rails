@@ -1,0 +1,27 @@
+# docker-compose run web rails new . --force --database=mysql --skip-bundle
+version: '2'
+services:
+  db:
+    image: mysql:5.7
+    container_name: 'rails-tutorial-db'
+    volumes:
+      - "$PWD/.data/db:/var/lib/mysql"
+    ports:
+      - "7000:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  web:
+    image: rails-tutorial:1.0
+    container_name: 'rails-tutorial-web'
+    # command: bundle exec rails s -p 4000 -b '0.0.0.0'
+    command: bash -c 'bundle install; rails s -b 0.0.0.0'
+    volumes:
+      - $PWD:/rails-tutorial
+    ports:
+      - "4000:3000"
+    depends_on:
+      - db
+
+# docker-compose build
+# docker-compose up
+# docker-compose run web rake db:create
